@@ -84,22 +84,34 @@ class _BoardScreenState extends State<BoardScreen> {
               return Column(
                 children: [
                   if (state.lists.isNotEmpty)
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const DraggableItemForm(),
-                        ).then((onValue) {
-                          setState(() {});
-                        });
-                        // context.push("/dragForm");
-                      },
-                      style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4)))),
-                      child: const Text("Add Task +"),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 22.0, vertical: 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      const DraggableItemForm(),
+                                ).then((onValue) {
+                                  setState(() {});
+                                });
+                                // context.push("/dragForm");
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(4)))),
+                              child: const Text("Add Task +"),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                  Divider(),
                   Expanded(
                     child: DragAndDropLists(
                       listPadding: const EdgeInsets.all(16),

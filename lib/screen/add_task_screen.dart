@@ -63,196 +63,233 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(22)),
-      margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          title: const Text('Draggable Item Form'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FormBuilder(
-            key: _formKey,
-            initialValue: {
-              'title': draggableModelItem?.title,
-              'description': draggableModelItem?.description,
-              'priority': draggableModelItem?.priority,
-              'dateTime': draggableModelItem != null
-                  ? DateTimeRange(
-                      start: draggableModelItem!.startTime,
-                      end: draggableModelItem!.endTime,
-                    )
-                  : null,
-              'category': draggableModelItem?.category,
-              'boardId': draggableModelItem?.boardId,
-            },
-            child: ListView(
-              children: [
-                FormBuilderTextField(
-                  name: 'title',
-                  decoration: const InputDecoration(labelText: 'Title'),
-                  validator: FormBuilderValidators.required(),
-                ),
-                FormBuilderTextField(
-                  name: 'description',
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  validator: FormBuilderValidators.required(),
-                ),
-                FormBuilderDropdown(
-                  name: 'priority',
-                  decoration: const InputDecoration(labelText: 'Priority'),
-                  items: Priority.values
-                      .map((priority) => DropdownMenuItem(
-                            value: priority,
-                            child: Text(priority.toString().split('.').last),
-                          ))
-                      .toList(),
-                  validator: FormBuilderValidators.required(),
-                ),
-                FormBuilderDateRangePicker(
-                  name: 'dateTime',
-                  firstDate: DateTime(1990),
-                  lastDate: DateTime(2050),
-                  decoration:
-                      const InputDecoration(labelText: 'Date Time Picker'),
-                  validator: FormBuilderValidators.required(),
-                ),
-                FormBuilderTextField(
-                  name: 'category',
-                  decoration: const InputDecoration(labelText: 'Category'),
-                  validator: FormBuilderValidators.required(),
-                ),
-                BlocBuilder<BoardBloc, BoardState>(builder: (context, state) {
-                  if (state is BoardLoaded) {
-                    return FormBuilderDropdown(
-                      name: 'boardId',
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(22)),
+            margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FormBuilder(
+                key: _formKey,
+                initialValue: {
+                  'title': draggableModelItem?.title,
+                  'description': draggableModelItem?.description,
+                  'priority': draggableModelItem?.priority,
+                  'dateTime': draggableModelItem != null
+                      ? DateTimeRange(
+                          start: draggableModelItem!.startTime,
+                          end: draggableModelItem!.endTime,
+                        )
+                      : null,
+                  'category': draggableModelItem?.category,
+                  'boardId': draggableModelItem?.boardId,
+                },
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    AppBar(
+                      backgroundColor: Colors.white,
+                      automaticallyImplyLeading: false,
+                      title: const Text('Draggable Item Form'),
+                    ),
+                    FormBuilderTextField(
+                      name: 'title',
+                      decoration: const InputDecoration(labelText: 'Title'),
+                      validator: FormBuilderValidators.required(),
+                    ),
+                    FormBuilderTextField(
+                      name: 'description',
                       decoration:
-                          const InputDecoration(labelText: 'Card Board'),
-                      items: state.lists
-                          .map((dragModel) => DropdownMenuItem(
-                                value: dragModel.boardId,
-                                child: Text(dragModel.header),
+                          const InputDecoration(labelText: 'Description'),
+                      validator: FormBuilderValidators.required(),
+                    ),
+                    FormBuilderDropdown(
+                      name: 'priority',
+                      decoration: const InputDecoration(labelText: 'Priority'),
+                      items: Priority.values
+                          .map((priority) => DropdownMenuItem(
+                                value: priority,
+                                child:
+                                    Text(priority.toString().split('.').last),
                               ))
                           .toList(),
                       validator: FormBuilderValidators.required(),
-                    );
-                  } else {
-                    return const Center(child: Text('Failed to load batches.'));
-                  }
-                }),
-                const SizedBox(height: 8),
-                Form(
-                  key: _formContactKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Contacts"),
-                      Row(
+                    ),
+                    FormBuilderDateRangePicker(
+                      name: 'dateTime',
+                      firstDate: DateTime(1990),
+                      lastDate: DateTime(2050),
+                      decoration:
+                          const InputDecoration(labelText: 'Date Time Picker'),
+                      validator: FormBuilderValidators.required(),
+                    ),
+                    FormBuilderTextField(
+                      name: 'category',
+                      decoration: const InputDecoration(labelText: 'Category'),
+                      validator: FormBuilderValidators.required(),
+                    ),
+                    BlocBuilder<BoardBloc, BoardState>(
+                        builder: (context, state) {
+                      if (state is BoardLoaded) {
+                        return FormBuilderDropdown(
+                          name: 'boardId',
+                          decoration:
+                              const InputDecoration(labelText: 'Card Board'),
+                          items: state.lists
+                              .map((dragModel) => DropdownMenuItem(
+                                    value: dragModel.boardId,
+                                    child: Text(dragModel.header),
+                                  ))
+                              .toList(),
+                          validator: FormBuilderValidators.required(),
+                        );
+                      } else {
+                        return const Center(
+                            child: Text('Failed to load batches.'));
+                      }
+                    }),
+                    const SizedBox(height: 8),
+                    Form(
+                      key: _formContactKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: FormBuilderTextField(
-                              name: 'contact_name',
-                              controller: _nameController,
-                              decoration:
-                                  const InputDecoration(labelText: 'Name'),
-                              validator: FormBuilderValidators.required(),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: FormBuilderTextField(
-                              name: 'contact_email',
-                              controller: _emailController,
-                              decoration:
-                                  const InputDecoration(labelText: 'Email'),
-                              validator: FormBuilderValidators.compose([
-                                FormBuilderValidators.required(),
-                                FormBuilderValidators.email(),
-                              ]),
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: _addContact,
+                          const Text("Contacts"),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: FormBuilderTextField(
+                                  name: 'contact_name',
+                                  controller: _nameController,
+                                  decoration:
+                                      const InputDecoration(labelText: 'Name'),
+                                  validator: FormBuilderValidators.required(),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: FormBuilderTextField(
+                                  name: 'contact_email',
+                                  controller: _emailController,
+                                  decoration:
+                                      const InputDecoration(labelText: 'Email'),
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(),
+                                    FormBuilderValidators.email(),
+                                  ]),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: _addContact,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ...List.generate(_contacts.length, (index) {
-                  final contact = _contacts[index];
-                  return ListTile(
-                    title: Text(contact.name),
-                    subtitle: Text(contact.email),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _removeContact(index),
                     ),
-                  );
-                }),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.saveAndValidate() ?? false) {
-                      final formData = _formKey.currentState?.value;
-                      if (_contacts.isNotEmpty && formData != null) {
-                        List<String> dateList =
-                            formData["dateTime"].toString().split(" - ");
+                    const SizedBox(height: 20),
+                    ...List.generate(_contacts.length, (index) {
+                      final contact = _contacts[index];
+                      return ListTile(
+                        title: Text(contact.name),
+                        subtitle: Text(contact.email),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _removeContact(index),
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.saveAndValidate() ?? false) {
+                          final formData = _formKey.currentState?.value;
+                          if (_contacts.isNotEmpty && formData != null) {
+                            List<String> dateList =
+                                formData["dateTime"].toString().split(" - ");
 
-                        final draggableItem = DraggableModelItem(
-                          id: Utils.generateRandomId(),
-                          title: formData['title'],
-                          description: formData['description'],
-                          priority: formData['priority'],
-                          comment: [],
-                          startTime: DateTime.parse(dateList.first),
-                          endTime: DateTime.parse(dateList[1]),
-                          createdAt: DateTime.now().toLocal().toString(),
-                          category: formData['category'],
-                          boardId: formData["boardId"],
-                          tasks: [],
-                          peoples: _contacts,
-                        );
-                        if (draggableModelItem != null) {
-                          context.read<BoardBloc>().add(AddBoardItemEvent(
+                            final draggableItem = DraggableModelItem(
+                              id: Utils.generateRandomId(),
+                              title: formData['title'],
+                              description: formData['description'],
+                              priority: formData['priority'],
+                              comment: [],
+                              startTime: DateTime.parse(dateList.first),
+                              endTime: DateTime.parse(dateList[1]),
+                              createdAt: DateTime.now().toLocal().toString(),
+                              category: formData['category'],
                               boardId: formData["boardId"],
-                              dragItem: draggableItem));
+                              tasks: [],
+                              peoples: _contacts,
+                            );
+                            if (draggableModelItem != null) {
+                              context.read<BoardBloc>().add(AddBoardItemEvent(
+                                  boardId: formData["boardId"],
+                                  dragItem: draggableItem));
+                            } else {
+                              context.read<BoardBloc>().add(AddBoardItemEvent(
+                                  boardId: formData["boardId"],
+                                  dragItem: draggableItem));
+                            }
+                            context.pop();
+                          } else {
+                            if (_formContactKey.currentState?.validate() ??
+                                false) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Contact is required")));
+                            } else {
+                              _formContactKey.currentState?.validate();
+                            }
+                          }
                         } else {
-                          context.read<BoardBloc>().add(AddBoardItemEvent(
-                              boardId: formData["boardId"],
-                              dragItem: draggableItem));
+                          if (_contacts.isEmpty) {
+                            _formContactKey.currentState?.validate();
+                          }
                         }
-                        context.pop();
-                      } else {
-                        if (_formContactKey.currentState?.validate() ?? false) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Contact is required")));
-                        } else {
-                          _formContactKey.currentState?.validate();
-                        }
-                      }
-                    } else {
-                      if (_contacts.isEmpty) {
-                        _formContactKey.currentState?.validate();
-                      }
-                    }
-                  },
-                  child: Text(draggableModelItem != null ? "Update" : 'Submit'),
+                      },
+                      child: Text(
+                        draggableModelItem != null ? "Update" : 'Submit',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
