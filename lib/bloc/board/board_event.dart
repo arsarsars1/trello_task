@@ -86,3 +86,10 @@ class DeleteBoardItemEvent extends BoardEvent {
   @override
   List<Object> get props => [dragItem, boardId];
 }
+
+class DeleteBoardEvent extends BoardEvent {
+  const DeleteBoardEvent();
+
+  @override
+  List<Object> get props => [];
+}

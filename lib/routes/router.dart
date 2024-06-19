@@ -13,7 +13,7 @@ class AppRouter {
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, state) => LoginScreen(),
+              builder: (context, state) => const LoginScreen(),
             ),
             GoRoute(
               path: '/board',
@@ -25,7 +25,7 @@ class AppRouter {
             ),
             GoRoute(
               path: '/dragForm',
-              builder: (context, state) => DraggableItemForm(),
+              builder: (context, state) => const DraggableItemForm(),
             ),
           ],
         );

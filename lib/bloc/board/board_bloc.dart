@@ -14,6 +14,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     on<AddBoardItemEvent>(_onAddBoardItem);
     on<UpdateBoardItemEvent>(_onUpdateBoardItem);
     on<DeleteBoardItemEvent>(_onDeleteBoardItem);
+    on<DeleteBoardEvent>(_onDeleteBoard);
     on<ReorderListEvent>(_onReorderList);
     on<ReorderListItemEvent>(_onReorderListItem);
   }
@@ -41,28 +42,39 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     }
   }
 
+  Future<void> _onDeleteBoard(
+      DeleteBoardEvent event, Emitter<BoardState> emit) async {
+    if (state is BoardLoaded) {
+      final currentState = state as BoardLoaded;
+      emit(BoardLoading());
+      await boardRepository.removeBoards(currentState.lists);
+      emit(const BoardLoaded(lists: []));
+    }
+  }
+
   Future<void> _onAddBoardItem(
       AddBoardItemEvent event, Emitter<BoardState> emit) async {
     if (state is BoardLoaded) {
-      // try {
-      final currentState = state as BoardLoaded;
-      emit(BoardLoading());
-      var list = currentState.lists;
-      if (list.any((DraggableModel model) => model.boardId == event.boardId)) {
-        DraggableModel model = list
-            .where((boardModel) => boardModel.boardId == event.boardId)
-            .first;
-        int index = list
-            .indexWhere((boardModel) => boardModel.boardId == event.boardId);
-        model.items.add(event.dragItem);
-        list.update(index, model);
-        await boardRepository.updateBoards(list);
-        emit(BoardSuccess());
-        emit(BoardLoaded(lists: list));
+      try {
+        final currentState = state as BoardLoaded;
+        emit(BoardLoading());
+        var list = currentState.lists;
+        if (list
+            .any((DraggableModel model) => model.boardId == event.boardId)) {
+          DraggableModel model = list
+              .where((boardModel) => boardModel.boardId == event.boardId)
+              .first;
+          int index = list
+              .indexWhere((boardModel) => boardModel.boardId == event.boardId);
+          model.items.add(event.dragItem);
+          list.update(index, model);
+          await boardRepository.updateBoards(list);
+          emit(BoardSuccess());
+          emit(BoardLoaded(lists: list));
+        }
+      } catch (e) {
+        emit(BoardError(message: e.toString()));
       }
-      // } catch (e) {
-      //   emit(BoardError(message: e.toString()));
-      // }
     }
   }
 

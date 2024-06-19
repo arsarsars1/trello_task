@@ -1,6 +1,9 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:task_tracker_pro/bloc/auth/auth_bloc.dart';
+import 'package:task_tracker_pro/bloc/auth/auth_event.dart';
 import 'package:task_tracker_pro/bloc/board/board_bloc.dart';
 import 'package:task_tracker_pro/bloc/board/board_event.dart';
 import 'package:task_tracker_pro/bloc/board/board_state.dart';
@@ -35,12 +38,22 @@ class _BoardScreenState extends State<BoardScreen> {
         centerTitle: true,
         actions: [
           IconButton(
+            tooltip: "Add Board",
             icon: const Icon(Icons.add),
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (context) => const AddBoardPopup(),
               );
+            },
+          ),
+          IconButton(
+            tooltip: "Sign Out",
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              context.read<BoardBloc>().add(const DeleteBoardEvent());
+              context.read<AuthBloc>().add(AuthLogoutEvent());
+              context.go("/");
             },
           ),
         ],
