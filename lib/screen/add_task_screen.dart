@@ -121,7 +121,10 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
                   lastDate: DateTime(2050),
                   decoration:
                       const InputDecoration(labelText: 'Date Time Picker'),
-                  validator: FormBuilderValidators.required(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    (dateRange) => dateRangeValidator(dateRange),
+                  ]),
                 ),
                 FormBuilderTextField(
                   name: 'category',
@@ -279,5 +282,17 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
         ),
       ),
     );
+  }
+
+  String? dateRangeValidator(DateTimeRange? dateRange) {
+    if (dateRange == null) {
+      return 'This field cannot be empty.';
+    }
+
+    DateTime now = DateTime.now();
+    if (dateRange.start.isBefore(now) || dateRange.end.isBefore(now)) {
+      return 'The selected date range cannot be in the past.';
+    }
+    return null;
   }
 }

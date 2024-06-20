@@ -61,12 +61,21 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         var list = currentState.lists;
         DraggableModel? model = list.safeFirstWhere(
             (boardModel) => boardModel.boardId == event.boardId);
+
         if (model != null) {
+          // var item = model.items.safeFirstWhere(
+          //     (dragItem) => dragItem.title == event.dragItem.title);
+
           model.items.add(event.dragItem);
           list.update(list.indexOf(model), model);
-          await boardRepository.updateBoards(list);
-          emit(BoardSuccess());
-          emit(BoardLoaded(lists: list));
+          if (checkDuplicateTitles(list)) {
+            emit(BoardErrorSameName());
+            emit(BoardLoaded(lists: list));
+          } else {
+            await boardRepository.updateBoards(list);
+            emit(BoardSuccess());
+            emit(BoardLoaded(lists: list));
+          }
         }
       } catch (e) {
         emit(BoardError(message: e.toString()));
@@ -111,6 +120,26 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     }
   }
 
+  bool checkDuplicateTitles(List<DraggableModel> draggableModels) {
+    Set<String> titles = {};
+    Set<String> header = {};
+
+    for (var model in draggableModels) {
+      if (header.contains(model.header)) {
+        return true;
+      }
+      header.add(model.header);
+      for (var item in model.items) {
+        if (titles.contains(item.title)) {
+          return true;
+        }
+        titles.add(item.title);
+      }
+    }
+
+    return false;
+  }
+
   Future<void> _onDeleteBoardItem(
       DeleteBoardItemEvent event, Emitter<BoardState> emit) async {
     if (state is BoardLoaded) {
@@ -138,9 +167,8 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       final movedList = updatedLists.removeAt(event.oldListIndex);
       updatedLists.insert(event.newListIndex, movedList);
 
-      await boardRepository.updateBoards(updatedLists);
+      await boardRepository.updateBoardsListIndex(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
-      updateList(emit);
     }
   }
 
@@ -162,16 +190,5 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       await boardRepository.updateBoards(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
     }
-  }
-
-  updateList(Emitter<BoardState> emit) async {
-    final lists = boardRepository.getBoards();
-    lists.forEach((action) {
-      print(action.header);
-      action.items.forEach((actions) {
-        print(actions.title);
-      });
-    });
-    emit(BoardLoaded(lists: lists));
   }
 }

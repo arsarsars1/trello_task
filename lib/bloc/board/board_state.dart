@@ -16,6 +16,8 @@ class BoardLoading extends BoardState {}
 
 class BoardSuccess extends BoardState {}
 
+class BoardErrorSameName extends BoardState {}
+
 class BoardSuccessUpdate extends BoardState {}
 
 class BoardDeleted extends BoardState {}

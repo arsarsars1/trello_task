@@ -34,11 +34,19 @@ class BoardRepository {
     await boardBox.putAll(boardMap);
   }
 
+  Future<void> addBoardsList(List<DraggableModel> boards) async =>
+      await boardBox.addAll(boards);
+
   // Update a whole list of boards
   Future<void> updateBoards(List<DraggableModel> boards) async {
     for (var board in boards) {
       await boardBox.put(board.header, board);
     }
+  }
+
+  Future<void> updateBoardsListIndex(List<DraggableModel> boards) async {
+    await boardBox.clear();
+    await addBoardsList(boards);
   }
 
   // Remove a whole list of boards

@@ -80,6 +80,11 @@ class _BoardScreenState extends State<BoardScreen> {
               const SnackBar(content: Text("Card Updated")),
             );
           }
+          if (state is BoardErrorSameName) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Same name card not allowed.")),
+            );
+          }
         },
         child: BlocBuilder<BoardBloc, BoardState>(
           builder: (context, state) {
