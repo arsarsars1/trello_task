@@ -289,7 +289,7 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
       return 'This field cannot be empty.';
     }
 
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().subtract(const Duration(days: 1));
     if (dateRange.start.isBefore(now) || dateRange.end.isBefore(now)) {
       return 'The selected date range cannot be in the past.';
     }

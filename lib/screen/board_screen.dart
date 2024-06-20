@@ -222,7 +222,7 @@ class _BoardScreenState extends State<BoardScreen> {
             ),
           ),
           child: Text(
-            "${list.header} ${list.boardId}",
+            list.header,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
