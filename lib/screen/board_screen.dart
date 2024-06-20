@@ -75,6 +75,11 @@ class _BoardScreenState extends State<BoardScreen> {
               const SnackBar(content: Text("Card deleted")),
             );
           }
+          if (state is BoardSuccessUpdate) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Card Updated")),
+            );
+          }
         },
         child: BlocBuilder<BoardBloc, BoardState>(
           builder: (context, state) {
@@ -111,7 +116,7 @@ class _BoardScreenState extends State<BoardScreen> {
                         ],
                       ),
                     ),
-                  Divider(),
+                  const Divider(),
                   Expanded(
                     child: DragAndDropLists(
                       listPadding: const EdgeInsets.all(16),
@@ -120,7 +125,7 @@ class _BoardScreenState extends State<BoardScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       children: state.lists.map(buildList).toList(),
-                      axis: Axis.horizontal,
+                      axis: Axis.vertical,
                       listWidth: width,
                       listDraggingWidth: width,
                       itemDivider: const Divider(
@@ -212,7 +217,7 @@ class _BoardScreenState extends State<BoardScreen> {
             ),
           ),
           child: Text(
-            list.header,
+            "${list.header} ${list.boardId}",
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),

@@ -59,15 +59,11 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
         final currentState = state as BoardLoaded;
         emit(BoardLoading());
         var list = currentState.lists;
-        if (list
-            .any((DraggableModel model) => model.boardId == event.boardId)) {
-          DraggableModel model = list
-              .where((boardModel) => boardModel.boardId == event.boardId)
-              .first;
-          int index = list
-              .indexWhere((boardModel) => boardModel.boardId == event.boardId);
+        DraggableModel? model = list.safeFirstWhere(
+            (boardModel) => boardModel.boardId == event.boardId);
+        if (model != null) {
           model.items.add(event.dragItem);
-          list.update(index, model);
+          list.update(list.indexOf(model), model);
           await boardRepository.updateBoards(list);
           emit(BoardSuccess());
           emit(BoardLoaded(lists: list));
@@ -81,29 +77,37 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
   Future<void> _onUpdateBoardItem(
       UpdateBoardItemEvent event, Emitter<BoardState> emit) async {
     if (state is BoardLoaded) {
-      // try {
-      final currentState = state as BoardLoaded;
-      emit(BoardLoading());
-      var list = currentState.lists;
-      if (list.any((DraggableModel model) => model.boardId == event.boardId)) {
-        DraggableModel model = list
-            .where((boardModel) => boardModel.boardId == event.boardId)
-            .first;
-        int index = list
-            .indexWhere((boardModel) => boardModel.boardId == event.boardId);
+      try {
+        final currentState = state as BoardLoaded;
+        emit(BoardLoading());
+        var list = currentState.lists;
+        DraggableModel? draggableModel = list.safeFirstWhere(
+            (DraggableModel model) => model.boardId == event.boardId);
+        if (event.boardId == event.dragItem.boardId) {
+          if (draggableModel != null) {
+            int dragModelItemIndex = draggableModel.items.indexWhere(
+                (dragItem) => dragItem.boardId == event.dragItem.boardId);
 
-        var dragModelItemIndex = model.items
-            .indexWhere((dragItem) => dragItem.boardId == event.boardId);
+            draggableModel.items.safeUpdate(dragModelItemIndex, event.dragItem);
+            list.safeUpdate(list.indexOf(draggableModel), draggableModel);
+          }
+        } else {
+          DraggableModel? model = list.safeFirstWhere(
+              (boardModel) => boardModel.boardId == event.dragItem.boardId);
+          if (model != null && draggableModel != null) {
+            draggableModel.items
+                .safeRemoveWhere((dragItem) => dragItem.id == event.cardId);
 
-        model.items.update(dragModelItemIndex, event.dragItem);
-        list.update(index, model);
+            model.items.add(event.dragItem);
+            list.safeUpdate(list.indexOf(model), model);
+          }
+        }
         await boardRepository.updateBoards(list);
-        emit(BoardSuccess());
+        emit(BoardSuccessUpdate());
         emit(BoardLoaded(lists: list));
+      } catch (e) {
+        emit(BoardError(message: e.toString()));
       }
-      // } catch (e) {
-      //   emit(BoardError(message: e.toString()));
-      // }
     }
   }
 
@@ -115,12 +119,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       var list = currentState.lists;
       DraggableModel model =
           list.where((boardModel) => boardModel.boardId == event.boardId).first;
-      int index =
-          list.indexWhere((boardModel) => boardModel.boardId == event.boardId);
 
       model.items.removeWhere(
           (dragItem) => dragItem.boardId == event.dragItem.boardId);
-      list.update(index, model);
+      list.safeUpdate(list.indexOf(model), model);
       await boardRepository.updateBoards(list);
       emit(BoardDeleted());
       emit(BoardLoaded(lists: list));
@@ -135,8 +137,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       final updatedLists = List<DraggableModel>.from(currentState.lists);
       final movedList = updatedLists.removeAt(event.oldListIndex);
       updatedLists.insert(event.newListIndex, movedList);
+
       await boardRepository.updateBoards(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
+      updateList(emit);
     }
   }
 
@@ -158,5 +162,16 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       await boardRepository.updateBoards(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
     }
+  }
+
+  updateList(Emitter<BoardState> emit) async {
+    final lists = boardRepository.getBoards();
+    lists.forEach((action) {
+      print(action.header);
+      action.items.forEach((actions) {
+        print(actions.title);
+      });
+    });
+    emit(BoardLoaded(lists: lists));
   }
 }

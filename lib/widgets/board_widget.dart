@@ -20,7 +20,9 @@ class BoardWidget extends StatelessWidget {
       ),
       child: Column(children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Expanded(child: Text(draggableModelItem.title)),
+          Expanded(
+              child: Text(
+                  draggableModelItem.title + " " + draggableModelItem.boardId)),
           InkWell(
             onTap: () async {
               await showMenu(

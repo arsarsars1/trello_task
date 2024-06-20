@@ -62,16 +62,18 @@ class AddBoardItemEvent extends BoardEvent {
 }
 
 class UpdateBoardItemEvent extends BoardEvent {
+  final int cardId;
   final String boardId;
   final DraggableModelItem dragItem;
 
   const UpdateBoardItemEvent({
+    required this.cardId,
     required this.boardId,
     required this.dragItem,
   });
 
   @override
-  List<Object> get props => [dragItem, boardId];
+  List<Object> get props => [dragItem, cardId, boardId];
 }
 
 class DeleteBoardItemEvent extends BoardEvent {

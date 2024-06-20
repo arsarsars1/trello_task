@@ -63,13 +63,12 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(22)),
         margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: FormBuilder(
@@ -223,8 +222,9 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
                           peoples: _contacts,
                         );
                         if (draggableModelItem != null) {
-                          context.read<BoardBloc>().add(AddBoardItemEvent(
-                              boardId: formData["boardId"],
+                          context.read<BoardBloc>().add(UpdateBoardItemEvent(
+                              boardId: draggableModelItem!.boardId,
+                              cardId: draggableModelItem!.id,
                               dragItem: draggableItem));
                         } else {
                           context.read<BoardBloc>().add(AddBoardItemEvent(
