@@ -2,7 +2,6 @@
 
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-
     <application
         android:label="Task tracker pro"
         android:name="${applicationName}"
@@ -16,7 +15,6 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -30,14 +28,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-    <activity android:name="com.linusu.flutter_web_auth_2.CallbackActivity" android:exported="true">
-        <intent-filter android:label="flutter_web_auth_2">
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="my.test.app" /> <!-- This must correspond to the custom scheme used for instantiatng the client... See below -->
-        </intent-filter>
-    </activity>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
