@@ -15,7 +15,7 @@ class DraggableModel extends HiveObject {
   @HiveField(3)
   final String header;
   @HiveField(4)
-  final List<DraggableModelItem> items;
+  List<DraggableModelItem> items;
 
   DraggableModel({
     this.color = Colors.black,

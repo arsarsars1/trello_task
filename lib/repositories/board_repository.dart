@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:task_tracker_pro/model/draggable_model.dart';
+import 'package:task_tracker_pro/model/draggable_model_item.dart';
 
 class BoardRepository {
   final Box<DraggableModel> boardBox;
@@ -53,6 +54,15 @@ class BoardRepository {
   Future<void> removeBoards(List<DraggableModel> boards) async {
     for (var board in boards) {
       await board.delete();
+    }
+  }
+
+  Future<void> updateBoardItems(
+      String header, List<DraggableModelItem> items) async {
+    DraggableModel? board = boardBox.get(header);
+    if (board != null) {
+      board.items = items;
+      await board.save();
     }
   }
 }

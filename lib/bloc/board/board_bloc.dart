@@ -101,6 +101,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
             draggableModel.items.safeUpdate(dragModelItemIndex, event.dragItem);
             list.safeUpdate(list.indexOf(draggableModel), draggableModel);
+            await boardRepository.updateBoard(draggableModel);
           }
         } else {
           DraggableModel? model = list.safeFirstWhere(
@@ -110,10 +111,11 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
                 .safeRemoveWhere((dragItem) => dragItem.id == event.cardId);
 
             model.items.add(event.dragItem);
+
             list.safeUpdate(list.indexOf(model), model);
+            await boardRepository.updateBoard(draggableModel);
           }
         }
-        await boardRepository.updateBoards(list);
         emit(BoardSuccessUpdate(state.lists));
         emit(BoardLoaded(lists: list));
       } catch (e) {
@@ -186,7 +188,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       movedItem.boardId = updatedLists[event.newListIndex].boardId;
       newListItems.insert(event.newItemIndex, movedItem);
 
-      await boardRepository.updateBoards(updatedLists);
+      await boardRepository.updateBoardsListIndex(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
     }
   }
