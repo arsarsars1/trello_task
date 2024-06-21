@@ -19,17 +19,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // final authBloc =
     context.read<AuthBloc>().add(AuthCheckingEvent());
-    // if (authBloc.state is AuthAuthenticated) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     context.go('/board');
-    //   });
-    // }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 400)).then((onValue) {
+        if (mounted) {
+          setState(() => isLoading = false);
+        }
+      });
+    });
   }
 
   @override
@@ -46,62 +48,67 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
         child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-          if (state is AuthLoading) {
+          if (state is AuthLoading || isLoading) {
             return const Center(child: CircularProgressIndicator());
-          }
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextFormField(
-                    controller: emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    validator: (value) {
-                      if (value == null || value.toString().isEmpty) {
-                        return 'Please enter email';
-                      } else if (!RegExp(emailRegex).hasMatch(value)) {
-                        return 'Invalid email address.';
-                      } else {
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(labelText: 'Email'),
+                      validator: (value) {
+                        if (value == null || value.toString().isEmpty) {
+                          return 'Please enter email';
+                        } else if (!RegExp(emailRegex).hasMatch(value)) {
+                          return 'Invalid email address.';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    TextFormField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(labelText: 'Password'),
+                      obscureText: true,
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return "This value is required";
+                        }
                         return null;
-                      }
-                    },
-                  ),
-                  TextFormField(
-                    controller: passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return "This value is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState != null &&
-                          _formKey.currentState!.validate()) {
-                        final email = emailController.text;
-                        final password = passwordController.text;
-                        context
-                            .read<AuthBloc>()
-                            .add(AuthLoginEvent(email, password));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Fill the field to continue")));
-                      }
-                    },
-                    child: const Text('Login'),
-                  ),
-                ],
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState != null &&
+                            _formKey.currentState!.validate()) {
+                          final email = emailController.text;
+                          final password = passwordController.text;
+                          context
+                              .read<AuthBloc>()
+                              .add(AuthLoginEvent(email, password));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Fill the field to continue")));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)))),
+                      child: const Text('Login'),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          }
         }),
       ),
     );

@@ -18,6 +18,7 @@ class CommentModelAdapter extends TypeAdapter<CommentModel> {
     };
     return CommentModel(
       id: fields[0] as int,
+      author: fields[3] as Contact,
       comment: fields[1] as String,
       createdAt: fields[2] as String,
     );
@@ -26,13 +27,15 @@ class CommentModelAdapter extends TypeAdapter<CommentModel> {
   @override
   void write(BinaryWriter writer, CommentModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.comment)
       ..writeByte(2)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(3)
+      ..write(obj.author);
   }
 
   @override

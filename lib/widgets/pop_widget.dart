@@ -7,7 +7,7 @@ import 'package:task_tracker_pro/model/draggable_model.dart';
 import 'package:task_tracker_pro/utils/utils.dart';
 
 class AddBoardPopup extends StatefulWidget {
-  const AddBoardPopup({Key? key}) : super(key: key);
+  const AddBoardPopup({super.key});
 
   @override
   State<AddBoardPopup> createState() => _AddBoardPopupState();
@@ -42,7 +42,10 @@ class _AddBoardPopupState extends State<AddBoardPopup> {
               onPressed: () {
                 _showColorPicker(context);
               },
-              style: ElevatedButton.styleFrom(backgroundColor: _selectedColor),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: _selectedColor,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)))),
               child: const Text('Pick Color'),
             ),
           ],

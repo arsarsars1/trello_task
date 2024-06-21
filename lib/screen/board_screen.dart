@@ -90,7 +90,7 @@ class _BoardScreenState extends State<BoardScreen> {
           builder: (context, state) {
             if (state is BoardLoading || state is BoardReOrder) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is BoardLoaded) {
+            } else if (state is BoardLoaded || state is BoardRunning) {
               return Column(
                 children: [
                   if (state.lists.isNotEmpty)
@@ -130,7 +130,7 @@ class _BoardScreenState extends State<BoardScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       children: state.lists.map(buildList).toList(),
-                      axis: Axis.vertical,
+                      axis: Axis.horizontal,
                       listWidth: width,
                       listDraggingWidth: width,
                       itemDivider: const Divider(

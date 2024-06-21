@@ -7,6 +7,7 @@ import 'package:task_tracker_pro/model/contact_adapter.dart';
 import 'package:task_tracker_pro/model/datetime_adapter.dart';
 import 'package:task_tracker_pro/model/draggable_model.dart';
 import 'package:task_tracker_pro/model/draggable_model_item.dart';
+import 'package:task_tracker_pro/model/duration_adapter.dart';
 import 'package:task_tracker_pro/model/priority.dart';
 import 'package:task_tracker_pro/model/task_model.dart';
 import 'package:task_tracker_pro/repositories/auth_repository.dart';
@@ -26,6 +27,7 @@ Future<void> init() async {
   Hive.registerAdapter(PriorityAdapter());
   Hive.registerAdapter(ColorAdapter());
   Hive.registerAdapter(DateTimeAdapter());
+  Hive.registerAdapter(DurationAdapter());
 
   await Hive.openBox<DraggableModel>('boards');
   await Hive.openBox('userBox');

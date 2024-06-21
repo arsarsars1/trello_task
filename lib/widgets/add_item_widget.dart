@@ -42,7 +42,10 @@ class _AddItemWidgetState extends State<AddItemWidget> {
               onPressed: () {
                 _showColorPicker(context);
               },
-              style: ElevatedButton.styleFrom(backgroundColor: _selectedColor),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: _selectedColor,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)))),
               child: const Text('Pick Color'),
             ),
           ],

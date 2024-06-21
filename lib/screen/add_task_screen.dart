@@ -132,7 +132,7 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
                   validator: FormBuilderValidators.required(),
                 ),
                 BlocBuilder<BoardBloc, BoardState>(builder: (context, state) {
-                  if (state is BoardLoaded) {
+                  if (state is BoardLoaded || state is BoardRunning) {
                     return FormBuilderDropdown(
                       name: 'boardId',
                       decoration:
@@ -250,6 +250,9 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
                       }
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4)))),
                   child: Text(
                     draggableModelItem != null ? "Update" : 'Submit',
                     style: const TextStyle(
@@ -263,8 +266,9 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
+                      backgroundColor: Colors.blue,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4)))),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

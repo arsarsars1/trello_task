@@ -5,6 +5,7 @@ import 'package:task_tracker_pro/bloc/board/board_bloc.dart';
 import 'package:task_tracker_pro/bloc/board/board_event.dart';
 import 'package:task_tracker_pro/model/draggable_model_item.dart';
 import 'package:task_tracker_pro/screen/add_task_screen.dart';
+import 'package:task_tracker_pro/screen/task_detail_screen.dart';
 import 'package:task_tracker_pro/utils/utils.dart';
 
 class BoardWidget extends StatelessWidget {
@@ -14,7 +15,13 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => TaskDetailsPage(task: draggableModelItem),
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 12,

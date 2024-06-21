@@ -35,6 +35,12 @@ class DraggableModelItem extends HiveObject {
   final List<TaskModel> tasks;
   @HiveField(12)
   final List<Contact> peoples;
+  @HiveField(13)
+  Duration? timeSpent;
+  @HiveField(14)
+  String? completedDate;
+  @HiveField(15)
+  String? startDateTime;
 
   DraggableModelItem({
     required this.id,
@@ -50,6 +56,9 @@ class DraggableModelItem extends HiveObject {
     required this.boardId,
     required this.tasks,
     required this.peoples,
+    this.timeSpent,
+    this.completedDate,
+    this.startDateTime,
   });
 
   Map<String, dynamic> toJson() => {
@@ -66,6 +75,9 @@ class DraggableModelItem extends HiveObject {
         'boardId': boardId,
         'tasks': tasks.map((e) => e.toJson()).toList(),
         'peoples': peoples.map((e) => e.toJson()).toList(),
+        'timeSpent': timeSpent?.inSeconds,
+        'completedDate': completedDate,
+        'startDateTime': startDateTime,
       };
 
   factory DraggableModelItem.fromJson(Map<String, dynamic> json) {
@@ -86,6 +98,11 @@ class DraggableModelItem extends HiveObject {
       tasks: (json['tasks'] as List).map((e) => TaskModel.fromJson(e)).toList(),
       peoples:
           (json['peoples'] as List).map((e) => Contact.fromJson(e)).toList(),
+      timeSpent: json['timeSpent'] != null
+          ? Duration(seconds: json['timeSpent'])
+          : null, // Deserialize timeSpent
+      completedDate: json['completedDate'],
+      startDateTime: json['startDateTime'],
     );
   }
 }

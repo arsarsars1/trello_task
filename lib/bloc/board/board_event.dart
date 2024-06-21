@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:task_tracker_pro/model/comment_model.dart';
 import 'package:task_tracker_pro/model/draggable_model.dart';
 import 'package:task_tracker_pro/model/draggable_model_item.dart';
 
@@ -94,4 +95,34 @@ class DeleteBoardEvent extends BoardEvent {
 
   @override
   List<Object> get props => [];
+}
+
+class StartTimerEvent extends BoardEvent {
+  final DraggableModelItem task;
+
+  const StartTimerEvent({required this.task});
+
+  @override
+  List<Object> get props => [task];
+}
+
+class StopTimerEvent extends BoardEvent {
+  final DraggableModelItem task;
+
+  const StopTimerEvent({required this.task});
+
+  @override
+  List<Object> get props => [task];
+}
+
+class CompleteTaskEvent extends BoardEvent {}
+
+class AddCommentEvent extends BoardEvent {
+  final DraggableModelItem task;
+  final CommentModel comment;
+
+  const AddCommentEvent({required this.task, required this.comment});
+
+  @override
+  List<Object> get props => [task, comment];
 }

@@ -30,13 +30,16 @@ class DraggableModelItemAdapter extends TypeAdapter<DraggableModelItem> {
       boardId: fields[10] as String,
       tasks: (fields[11] as List).cast<TaskModel>(),
       peoples: (fields[12] as List).cast<Contact>(),
+      timeSpent: fields[13] as Duration?,
+      completedDate: fields[14] as String?,
+      startDateTime: fields[15] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, DraggableModelItem obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,7 +65,13 @@ class DraggableModelItemAdapter extends TypeAdapter<DraggableModelItem> {
       ..writeByte(11)
       ..write(obj.tasks)
       ..writeByte(12)
-      ..write(obj.peoples);
+      ..write(obj.peoples)
+      ..writeByte(13)
+      ..write(obj.timeSpent)
+      ..writeByte(14)
+      ..write(obj.completedDate)
+      ..writeByte(15)
+      ..write(obj.startDateTime);
   }
 
   @override
