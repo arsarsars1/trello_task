@@ -210,26 +210,37 @@ class _DraggableItemFormState extends State<DraggableItemForm> {
                         List<String> dateList =
                             formData["dateTime"].toString().split(" - ");
 
-                        final draggableItem = DraggableModelItem(
-                          id: Utils.generateRandomId(),
-                          title: formData['title'],
-                          description: formData['description'],
-                          priority: formData['priority'],
-                          comment: [],
-                          startTime: DateTime.parse(dateList.first),
-                          endTime: DateTime.parse(dateList[1]),
-                          createdAt: DateTime.now().toLocal().toString(),
-                          category: formData['category'],
-                          boardId: formData["boardId"],
-                          tasks: [],
-                          peoples: _contacts,
-                        );
                         if (draggableModelItem != null) {
+                          final updatedItem = draggableModelItem!.copyWith(
+                            id: Utils.generateRandomId(),
+                            title: formData['title'],
+                            description: formData['description'],
+                            priority: formData['priority'],
+                            category: formData['category'],
+                            boardId: formData["boardId"],
+                            peoples: _contacts,
+                            startTime: DateTime.parse(dateList.first),
+                            endTime: DateTime.parse(dateList[1]),
+                          );
                           context.read<BoardBloc>().add(UpdateBoardItemEvent(
                               boardId: draggableModelItem!.boardId,
                               cardId: draggableModelItem!.id,
-                              dragItem: draggableItem));
+                              dragItem: updatedItem));
                         } else {
+                          final draggableItem = DraggableModelItem(
+                            id: Utils.generateRandomId(),
+                            title: formData['title'],
+                            description: formData['description'],
+                            priority: formData['priority'],
+                            comment: [],
+                            startTime: DateTime.parse(dateList.first),
+                            endTime: DateTime.parse(dateList[1]),
+                            createdAt: DateTime.now().toLocal().toString(),
+                            category: formData['category'],
+                            boardId: formData["boardId"],
+                            tasks: [],
+                            peoples: _contacts,
+                          );
                           context.read<BoardBloc>().add(AddBoardItemEvent(
                               boardId: formData["boardId"],
                               dragItem: draggableItem));

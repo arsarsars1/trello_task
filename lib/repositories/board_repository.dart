@@ -45,7 +45,7 @@ class BoardRepository {
     }
   }
 
-  Future<void> updateBoardsListIndex(List<DraggableModel> boards) async {
+  Future<void> updateList(List<DraggableModel> boards) async {
     await boardBox.clear();
     await addBoardsList(boards);
   }

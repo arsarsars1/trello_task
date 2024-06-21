@@ -73,10 +73,10 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
           list.update(list.indexOf(model), model);
           if (checkDuplicateTitles(list)) {
             emit(BoardErrorSameName(state.lists));
-            emit(BoardLoaded(lists: list));
+            emit(BoardLoaded(lists: state.lists));
           } else {
-            await boardRepository.updateBoards(list);
-            emit(BoardSuccess(state.lists));
+            await boardRepository.updateBoard(model);
+            emit(BoardSuccess(list));
             emit(BoardLoaded(lists: list));
           }
         }
@@ -149,15 +149,19 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
     if (state is BoardLoaded || state is BoardRunning) {
       emit(BoardLoading(state.lists));
       var list = state.lists;
-      DraggableModel model =
-          list.where((boardModel) => boardModel.boardId == event.boardId).first;
+      DraggableModel? model = list
+          .safeFirstWhere((boardModel) => boardModel.boardId == event.boardId);
 
-      model.items.removeWhere(
-          (dragItem) => dragItem.boardId == event.dragItem.boardId);
-      list.safeUpdate(list.indexOf(model), model);
-      await boardRepository.updateBoards(list);
-      emit(BoardDeleted(state.lists));
-      emit(BoardLoaded(lists: list));
+      if (model != null) {
+        model.items.removeWhere((dragItem) => dragItem.id == event.dragItem.id);
+
+        list.safeUpdate(list.indexOf(model), model);
+        await boardRepository.updateBoard(model);
+        emit(BoardDeleted(list));
+        emit(BoardLoaded(lists: list));
+      } else {
+        emit(BoardLoaded(lists: state.lists));
+      }
     }
   }
 
@@ -169,7 +173,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       final movedList = updatedLists.removeAt(event.oldListIndex);
       updatedLists.insert(event.newListIndex, movedList);
 
-      await boardRepository.updateBoardsListIndex(updatedLists);
+      await boardRepository.updateList(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
     }
   }
@@ -188,7 +192,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       movedItem.boardId = updatedLists[event.newListIndex].boardId;
       newListItems.insert(event.newItemIndex, movedItem);
 
-      await boardRepository.updateBoardsListIndex(updatedLists);
+      await boardRepository.updateList(updatedLists);
       emit(BoardLoaded(lists: updatedLists));
     }
   }

@@ -105,4 +105,42 @@ class DraggableModelItem extends HiveObject {
       startDateTime: json['startDateTime'],
     );
   }
+
+  DraggableModelItem copyWith({
+    int? id,
+    String? title,
+    String? description,
+    Priority? priority,
+    String? urlImage,
+    List<CommentModel>? comment,
+    DateTime? startTime,
+    DateTime? endTime,
+    String? createdAt,
+    String? category,
+    String? boardId,
+    List<TaskModel>? tasks,
+    List<Contact>? peoples,
+    Duration? timeSpent,
+    String? completedDate,
+    String? startDateTime,
+  }) {
+    return DraggableModelItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      priority: priority ?? this.priority,
+      urlImage: urlImage ?? this.urlImage,
+      comment: comment ?? this.comment,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      createdAt: createdAt ?? this.createdAt,
+      category: category ?? this.category,
+      boardId: boardId ?? this.boardId,
+      tasks: tasks ?? this.tasks,
+      peoples: peoples ?? this.peoples,
+      timeSpent: timeSpent ?? this.timeSpent,
+      completedDate: completedDate ?? this.completedDate,
+      startDateTime: startDateTime ?? this.startDateTime,
+    );
+  }
 }
