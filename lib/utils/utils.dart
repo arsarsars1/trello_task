@@ -55,8 +55,10 @@ class Utils {
     final now = DateTime.now();
     final difference = now.difference(time);
 
-    if (difference.inSeconds < 60) {
+    if (difference.inSeconds < 5) {
       return 'a few seconds ago';
+    } else if (difference.inSeconds < 60) {
+      return '${difference.inSeconds} seconds ago';
     } else if (difference.inMinutes == 1) {
       return 'a minute ago';
     } else if (difference.inMinutes < 60) {
