@@ -88,6 +88,26 @@ class _BoardScreenState extends State<BoardScreen> {
         },
         child: BlocBuilder<BoardBloc, BoardState>(
           builder: (context, state) {
+            if (state is BoardError) {
+              return Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(state.message.toString()),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<BoardBloc>().add(LoadBoardEvent());
+                    },
+                    style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4)))),
+                    child: const Text('Click to refresh'),
+                  ),
+                ],
+              ));
+            }
             if (state is BoardLoading || state is BoardReOrder) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is BoardLoaded || state is BoardRunning) {
